@@ -1,3 +1,8 @@
+# Imports and Initial Setup:
+
+# Libraries like torch, numpy, and argparse are imported. torch is used for building and training neural networks, numpy for numerical operations, 
+# and argparse for parsing command-line arguments.
+
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -7,51 +12,6 @@ import numpy as np
 import time
 import pickle
 import argparse
-
-# Imports and Initial Setup:
-
-# Libraries like torch, numpy, and argparse are imported. torch is used for building and training neural networks, numpy for numerical operations, 
-# and argparse for parsing command-line arguments.
-
-# Argument Parsing:
-
-# An argument parser is set up to accept a -batch_size parameter from the command line. This demonstrates how to get external configurations 
-# but isn't used further in the script.
-
-# Data Processing:
-
-# Loads a vocabulary from a file, creates mappings from characters to integers and vice versa (string_to_int, int_to_string), and defines functions 
-# for encoding and decoding strings to and from sequences of integers.
-
-# Model Components:
-
-# Defines several PyTorch nn.Module classes for the components of the GPT model:
-# Head: Implements a single head of self-attention.
-# MultiHeadAttention: Combines multiple Head instances to form multi-head self-attention.
-# FeedForward: A feedforward neural network used within each transformer block.
-# Block: A single transformer block, combining multi-head attention and a feedforward network with layer normalization.
-# GPTLanguageModel: The complete model, assembling the embedding layers, multiple Block instances, and the output layer to predict the next token.
-
-# Model Initialization and Loading:
-
-# Initializes an instance of GPTLanguageModel with the vocabulary size and loads model parameters from a file. This demonstrates how to save and load 
-# models with PyTorch, although the model initialization just before loading is redundant since the loaded model will overwrite it.
-
-# Interactive Text Generation:
-
-# Enters an infinite loop, prompting the user for input and using the model to generate and print a completion. This demonstrates how to use the model 
-# for generating text based on input prompts.
-
-# Text Generation Method (generate):
-
-# Within GPTLanguageModel, the generate method takes an initial sequence of indices (tokens) and generates a specified number of additional tokens one
-#  at a time. It showcases how to use the model's outputs to sample the next token and concatenate it to the input for subsequent predictions.
-
-
-# parser = argparse.ArgumentParser(description = 'This is a demo')
-# parser.add_argument('-batch_size', type=str, required=True, help='Please provide a batch_size')
-# args = parser.parse_args()
-# print(f'batch size: {args.batch_size}')
 
 device = 'cpu'
 batch_size = 32
@@ -65,6 +25,10 @@ n_embd = 384
 n_head = 4
 n_layer = 4
 
+# Data Processing:
+
+# Loads a vocabulary from a file, creates mappings from characters to integers and vice versa (string_to_int, int_to_string), and defines functions 
+# for encoding and decoding strings to and from sequences of integers.
 
 chars = ""
 with open("wizardofoz/vocab.txt",'r',encoding='utf-8') as f:
@@ -77,6 +41,16 @@ string_to_int = { ch: i for i, ch in enumerate(chars) }
 int_to_string = { i: ch for i, ch in enumerate(chars) }
 encode = lambda s: [string_to_int[c] for c in s]
 decode = lambda l: ''.join([int_to_string[i] for i in l])
+
+# Model Components:
+
+# Defines several PyTorch nn.Module classes for the components of the LLM model:
+# Head: Implements a single head of self-attention.
+# MultiHeadAttention: Combines multiple Head instances to form multi-head self-attention.
+# FeedForward: A feedforward neural network used within each transformer block.
+# Block: A single transformer block, combining multi-head attention and a feedforward network with layer normalization.
+# LargeLanguageModel: The complete model, assembling the embedding layers, multiple Block instances, and the output layer to predict the next token.
+
 
 class Head(nn.Module):
     """ one head of self-attention """
@@ -194,13 +168,25 @@ class LargeLanguageModel(nn.Module):
          index_next = torch.multinomial(probs, num_samples=1)
          index = torch.cat((index, index_next), dim=1)
       return index
-   
+
+# Model Initialization and Loading:
+
+# Initializes an instance of LargeLanguageModel with the vocabulary size and loads model parameters from a file. This demonstrates how to save and load 
+# models with PyTorch, although the model initialization just before loading is redundant since the loaded model will overwrite it.
+
 model = LargeLanguageModel(vocab_size)
 print('Loading model parameters...')
 with open('woo_model_1.pkl', 'rb') as f:
     model = pickle.load(f)
 print('Loaded successfully!')
 m=model.to(device)
+
+# Interactive Text Generation:
+
+# Enters an infinite loop, prompting the user for input and using the model to generate and print a completion. This demonstrates how to use the model 
+# for generating text based on input prompts. Within LargeLanguageModel, the generate method takes an initial sequence of indices (tokens) and generates 
+# a specified number of additional tokens one at a time. It showcases how to use the model's outputs to sample the next token and concatenate it to the input for subsequent predictions.
+
 
 while True:
     prompt = input("Prompt:\n")
