@@ -2,14 +2,12 @@ import torch
 import re
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
-# Make sure to load both the model and tokenizer from the same directory
 model_dir = './woo_trained_model'
 
 # Load the trained model and tokenizer
 tokenizer = GPT2Tokenizer.from_pretrained(model_dir)
 model = GPT2LMHeadModel.from_pretrained(model_dir)
 
-# Ensure the model is in evaluation mode
 model.eval()
 
 # Function to generate a response from a prompt
@@ -28,7 +26,6 @@ def generate_response(prompt_text):
         repetition_penalty=1.2,
         pad_token_id=tokenizer.eos_token_id
     )
-    
     
     # Decode the generated sequence to a string
     generated_sequence = tokenizer.decode(output_sequences[0], skip_special_tokens=True)
