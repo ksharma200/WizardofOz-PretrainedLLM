@@ -26,7 +26,7 @@ n_head = 4
 n_layer = 4
 
 chars = ""
-with open("data/vocab.txt",'r',encoding='utf-8') as f:
+with open("wizardofoz/vocab.txt",'r',encoding='utf-8') as f:
     text = f.read()
     chars = sorted(list(set(text)))
 
@@ -38,7 +38,7 @@ encode = lambda s: [string_to_int[c] for c in s]
 decode = lambda l: ''.join([int_to_string[i] for i in l])
 
 def get_random_chunk(split):
-    filename = "data\output_train.txt" if split == "train" else "data\output_val.txt"
+    filename = "wizardofoz\woo_output_train.txt" if split == "train" else "wizardofoz\woo_output_val.txt"
     with open(filename, 'rb') as f:
         with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
             # Determine the file size and a random position to start reading
@@ -203,10 +203,8 @@ for iter in range(max_iters):
         losses = estimate_loss()
         print(f"step: {iter}, train loss {losses['train']:.3f}, val loss: {losses['val']:.3f}")
 
-    # Sample batch of data
     xb, yb = get_batch('train')
 
-    # Evaluate the loss
     logits, loss = model.forward(xb, yb)
     optimizer.zero_grad(set_to_none=True)
     loss.backward()
