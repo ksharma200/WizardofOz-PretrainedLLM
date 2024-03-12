@@ -133,8 +133,8 @@ def main():
     print(f"Best parameters: {best_params}")
 
     # After training, save the model and tokenizer
-    model.save_pretrained('./woo_trained_model2')
-    tokenizer.save_pretrained('./woo_trained_model2')
+    model.save_pretrained('./woo_trained_model')
+    tokenizer.save_pretrained('./woo_trained_model')
 
 if __name__ == '__main__':
     main()
