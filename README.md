@@ -12,5 +12,6 @@ Trained on CPU device with 12 GB RAM. Total model training time = 41.5 hours.
 
 
 Inspired from FreeCodeCamp's Intro to LLMs course
+
 Youtube: https://youtu.be/UU1WVnMk4E8?si=w_bZfxivekarZExx
 
